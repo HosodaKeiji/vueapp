@@ -3,7 +3,7 @@
         <h2>ルーレット</h2>
     
         <!-- お店選択ボタン -->
-        <button @click="showModal = true">お店を選択</button>
+        <button @click="openModal">お店を選択</button>
     
         <!-- モーダル -->
         <div v-if="showModal" class="modal">
@@ -98,6 +98,15 @@ const fetchStores = async () => {
 // onMountedでAPIからデータを取得
 onMounted(fetchStores);
 
+// モーダルを開く処理
+const openModal = () => {
+    selectedStores.value = stores.value.filter(store =>
+        rouletteStores.value.some(r => r.id === store.id)
+    );
+    showModal.value = true;
+};
+
+
 // 色生成
 const getRandomColor = (i) => {
     const hue = (i * 137.508) % 360;
@@ -142,14 +151,24 @@ const startRoulette = () => {
     if (rouletteStores.value.length === 0 || isSpinning.value) return;
 
     isSpinning.value = true;
+
     const total = rouletteStores.value.length;
     const randomIndex = Math.floor(Math.random() * total);
     const anglePerItem = 360 / total;
     const rotateAngle = 360 * 5 - randomIndex * anglePerItem - anglePerItem / 2;
 
     const wheel = wheelRef.value;
-    wheel.style.transition = 'transform 4s ease-out';
-    wheel.style.transform = `rotate(${rotateAngle}deg)`;
+
+    // 一度 transform をリセットして再描画を待つ
+    wheel.style.transition = 'none';
+    wheel.style.transform = 'rotate(0deg)';
+    // 次のフレームで再度回転を適用（これにより transition が効く）
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+            wheel.style.transition = 'transform 4s ease-out';
+            wheel.style.transform = `rotate(${rotateAngle}deg)`;
+        });
+    });
 
     setTimeout(() => {
         rouletteResult.value = rouletteStores.value[randomIndex];
@@ -157,6 +176,7 @@ const startRoulette = () => {
         alert(`選ばれたお店は: ${rouletteResult.value.name}`);
     }, 4000);
 };
+
 
 // ナビゲーションメソッド
 const goHome = () => router.push('/');
@@ -202,6 +222,11 @@ button:disabled {
     border-radius: 8px;
     text-align: left;
     width: 300px;
+}
+
+.modal-content ul {
+    list-style: none;
+    padding: 0;
 }
 
 .roulette-wrapper {
