@@ -1,0 +1,11 @@
+# 共通
+node_modules/
+dist/
+.env
+
+# フロントエンド
+/frontend/node_modules/
+/frontend/dist/
+
+# バックエンド
+/backend/node_modules/

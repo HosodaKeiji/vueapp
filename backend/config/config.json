@@ -1,0 +1,9 @@
+{
+    "development": {
+    "username": "vueapp",
+    "password": "vueapp",
+    "database": "vueapp_db",
+    "host": "127.0.0.1",
+    "dialect": "postgres"
+    }
+}
