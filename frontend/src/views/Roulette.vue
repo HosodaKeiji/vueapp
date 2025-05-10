@@ -9,8 +9,19 @@
         <div v-if="showModal" class="modal">
             <div class="modal-content">
                 <h3>お店を選んでください</h3>
+
+                <!-- ジャンル選択プルダウン -->
+                <div style="margin-bottom: 1rem;">
+                    <label for="genre-select">ジャンルで絞り込み:</label>
+                    <select id="genre-select" v-model="selectedGenre">
+                        <option value="">すべて</option>
+                        <option v-for="genre in uniqueGenres" :key="genre" :value="genre">{{ genre }}</option>
+                    </select>
+                </div>
+
+                <!-- 店舗リスト -->
                 <ul>
-                    <li v-for="store in stores" :key="store.id">
+                    <li v-for="store in filteredStores" :key="store.id">
                         <label>
                             <input type="checkbox" v-model="selectedStores" :value="store" />
                             {{ store.name }}
@@ -67,7 +78,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
@@ -105,6 +116,23 @@ const openModal = () => {
     );
     showModal.value = true;
 };
+
+const selectedGenre = ref('');
+
+// ユニークなジャンル一覧を抽出（プルダウン用）
+const uniqueGenres = computed(() => {
+    const genreSet = new Set(stores.value.map(store => store.genre));
+    return Array.from(genreSet);
+});
+
+// 選択ジャンルでフィルタ（チェックボックスリスト用）
+const filteredStores = computed(() => {
+    if (!selectedGenre.value) {
+        return stores.value;
+    }
+    return stores.value.filter(store => store.genre === selectedGenre.value);
+});
+
 
 
 // 色生成
@@ -228,6 +256,31 @@ button:disabled {
     list-style: none;
     padding: 0;
 }
+
+/* ジャンル絞り込みセレクトボックス */
+#genre-select {
+    padding: 0.5rem;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+    background-color: white;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg fill='gray' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.5rem center;
+    background-size: 1rem;
+    cursor: pointer;
+    width: 100%;
+    max-width: 100%;
+}
+
+label[for="genre-select"] {
+    font-weight: bold;
+    margin-right: 0.5rem;
+}
+
 
 .roulette-wrapper {
     position: relative;
