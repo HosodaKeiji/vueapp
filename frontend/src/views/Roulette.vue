@@ -28,6 +28,7 @@
                         </label>
                     </li>
                 </ul>
+
                 <button @click="addStoresToRoulette">選択完了</button>
                 <button @click="showModal = false">キャンセル</button>
             </div>
@@ -133,8 +134,6 @@ const filteredStores = computed(() => {
     return stores.value.filter(store => store.genre === selectedGenre.value);
 });
 
-
-
 // 色生成
 const getRandomColor = (i) => {
     const hue = (i * 137.508) % 360;
@@ -184,7 +183,6 @@ const startRoulette = () => {
     const randomIndex = Math.floor(Math.random() * total);
     const anglePerItem = 360 / total;
     const rotateAngle = 360 * 5 - randomIndex * anglePerItem - anglePerItem / 2;
-
     const wheel = wheelRef.value;
 
     // 一度 transform をリセットして再描画を待つ

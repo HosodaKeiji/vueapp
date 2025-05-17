@@ -25,7 +25,6 @@ import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
-
 const stores = ref([]);
 
 const fetchStores = async () => {
@@ -40,7 +39,6 @@ const fetchStores = async () => {
         console.error('通信エラー:', err);
     }
 };
-
 onMounted(fetchStores);
 
 const confirmDelete = (id) => {
@@ -56,11 +54,11 @@ const removeStore = async (id) => {
         });
 
         if (res.ok) {
-        stores.value = stores.value.filter(store => store.id !== id);
-        alert('お店を削除しました');
+            stores.value = stores.value.filter(store => store.id !== id);
+            alert('お店を削除しました');
         } else {
-        const data = await res.json();
-        alert(`削除失敗: ${data.error}`);
+            const data = await res.json();
+            alert(`削除失敗: ${data.error}`);
         }
     } catch (err) {
         alert('通信エラー: 削除できませんでした');
@@ -158,6 +156,3 @@ li {
     color: white;
 }
 </style>
-
-やること
-削除のAPIの作成

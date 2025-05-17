@@ -34,7 +34,6 @@ const router = useRouter();
 const name = ref('');
 const genre = ref('');
 const priceRange = ref('');
-const message = ref('');
 
 const submitStore = async () => {
     const res = await fetch('http://localhost:3000/api/stores', {
@@ -50,11 +49,9 @@ const submitStore = async () => {
     if (res.ok) {
         alert('お店を追加しました');
         name.value = genre.value = priceRange.value = '';
-        message.value = '';
     } else {
         const data = await res.json();
         alert(`エラー: ${data.error}`);
-        message.value = `エラー: ${data.error}`;
     }
 };
 
